@@ -23,18 +23,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-          ],
-        ),
+      body: ListView(
+        physics: BouncingScrollPhysics(),
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+                  child: Text('메모메모',
+                      style: TextStyle(fontSize: 36, color: Colors.blue)))
+            ],
+          ),
+          ...LoadMemo(),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -46,5 +47,19 @@ class _MyHomePageState extends State<MyHomePage> {
         icon: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  List<Widget> LoadMemo() {
+    List<Widget> memoList = [];
+    memoList.add(Container(
+      color: Colors.purpleAccent,
+      height: 200,
+    ));
+    memoList.add(Container(
+      color: Colors.redAccent,
+      height: 200,
+    ));
+
+    return memoList;
   }
 }
