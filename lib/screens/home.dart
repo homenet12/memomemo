@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:memomemo/database/memo.dart';
 import 'edit.dart';
+import '../database/db.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -29,9 +31,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Row(
             children: <Widget>[
               Padding(
-                  padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                  child: Text('메모메모',
-                      style: TextStyle(fontSize: 36, color: Colors.blue)))
+                padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+                child: Text(
+                  '메모메모',
+                  style: TextStyle(fontSize: 36, color: Colors.blue),
+                ),
+              )
             ],
           ),
           ...loadMemo(),
@@ -50,16 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   List<Widget> loadMemo() {
+    DBHelper dbHelper = new DBHelper();
     List<Widget> memoList = [];
-    memoList.add(Container(
-      color: Colors.purpleAccent,
-      height: 200,
-    ));
-    memoList.add(Container(
-      color: Colors.redAccent,
-      height: 200,
-    ));
-
+    var memoVal = dbHelper.memos();
+    print('=================');
+    print(memoVal);
     return memoList;
   }
 }
