@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       style: TextStyle(fontSize: 36, color: Colors.blue)))
             ],
           ),
-          ...LoadMemo(),
+          ...loadMemo(),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  List<Widget> LoadMemo() {
+  List<Widget> loadMemo() {
     List<Widget> memoList = [];
     memoList.add(Container(
       color: Colors.purpleAccent,
