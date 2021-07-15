@@ -1,5 +1,3 @@
-import '../screens/edit.dart';
-
 class Memo {
   final String id;
   final String title;

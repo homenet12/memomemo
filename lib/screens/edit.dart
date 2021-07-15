@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:memomemo/database/db.dart';
 import 'package:memomemo/database/memo.dart';
+import 'package:memomemo/screens/home.dart';
 
 class EditPage extends StatelessWidget {
   String title = '';
@@ -19,7 +20,11 @@ class EditPage extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: saveDB,
+            onPressed: () {
+              saveDB();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyHomePage()));
+            },
           ),
         ],
       ),

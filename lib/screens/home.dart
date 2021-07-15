@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:memomemo/database/memo.dart';
-import 'edit.dart';
-import '../database/db.dart';
+import 'package:memomemo/screens/edit.dart';
+import 'package:memomemo/database/db.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -25,21 +25,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        physics: BouncingScrollPhysics(),
+      body: Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                child: Text(
-                  '메모메모',
-                  style: TextStyle(fontSize: 36, color: Colors.blue),
-                ),
-              )
-            ],
+          Padding(
+            padding: EdgeInsets.only(left: 5, top: 40, bottom: 20),
+            child: Text(
+              '메모메모',
+              style: TextStyle(fontSize: 36, color: Colors.blue),
+            ),
           ),
-          ...loadMemo(),
+          Expanded(
+            child: memoBuilder(),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -47,19 +44,56 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => EditPage()));
         },
-        tooltip: '노트를 추가하려면 클릭하세요',
+        tooltip: '메모를 추가하려면 클릭하세요',
         label: Text('메모 추가'),
         icon: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  List<Widget> loadMemo() {
-    DBHelper dbHelper = new DBHelper();
-    List<Widget> memoList = [];
-    var memoVal = dbHelper.memos();
-    print('=================');
-    print(memoVal);
-    return memoList;
+  Future<List<Memo>> loadMemo() async {
+    DBHelper dbHelper = DBHelper();
+    return await dbHelper.memos();
+  }
+
+  Widget memoBuilder() {
+    return FutureBuilder(
+      builder: (BuildContext context, AsyncSnapshot<List<Memo>> snap) {
+        if (snap.data.isEmpty) {
+          return Container(
+            alignment: Alignment.center,
+            child: Text('지금 바로 "메모 추가" 버튼을 눌러 새로운 메모를 추가해보세요!'),
+          );
+        }
+        return ListView.builder(
+          itemCount: snap.data.length,
+          itemBuilder: (context, index) {
+            Memo memo = snap.data[index];
+            return Column(
+              children: <Widget>[
+                Text(memo.title),
+                Text(memo.text),
+                Text(memo.editTime),
+                IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      deleteMemo(memo.id);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage()));
+                    }),
+              ],
+            );
+          },
+        );
+      },
+      future: loadMemo(),
+    );
+  }
+
+  deleteMemo(String id) {
+    DBHelper dbHelper = DBHelper();
+    dbHelper.deleteMemo(id);
   }
 }

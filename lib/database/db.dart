@@ -71,7 +71,7 @@ class DBHelper {
     );
   }
 
-  Future<void> deleteMemo(int id) async {
+  Future<void> deleteMemo(String id) async {
     final db = await database;
 
     // 데이터베이스에서 Memo를 삭제합니다.
