@@ -41,8 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => EditPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => EditPage(new Memo())));
         },
         tooltip: '메모를 추가하려면 클릭하세요',
         label: Text('메모 추가'),
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget memoBuilder() {
     return FutureBuilder(
       builder: (BuildContext context, AsyncSnapshot<List<Memo>> snap) {
-        if (snap.data.isEmpty) {
+        if (snap.data == null) {
           return Container(
             alignment: Alignment.center,
             child: Text('지금 바로 "메모 추가" 버튼을 눌러 새로운 메모를 추가해보세요!'),
@@ -69,20 +69,44 @@ class _MyHomePageState extends State<MyHomePage> {
           itemCount: snap.data.length,
           itemBuilder: (context, index) {
             Memo memo = snap.data[index];
+            print(memo.toString());
             return Column(
               children: <Widget>[
-                Text(memo.title),
-                Text(memo.text),
-                Text(memo.editTime),
-                IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      deleteMemo(memo.id);
-                      Navigator.push(
+                ListTile(
+                  leading: Icon(Icons.album),
+                  title: Text(memo.title),
+                  subtitle: Text(memo.text),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      child: const Text('수정'),
+                      onPressed: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => MyHomePage()));
-                    }),
+                            builder: (context) => EditPage(memo),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      child: const Text('삭제'),
+                      onPressed: () {
+                        deleteMemo(memo.id);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
               ],
             );
           },

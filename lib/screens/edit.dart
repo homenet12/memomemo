@@ -6,8 +6,15 @@ import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/screens/home.dart';
 
 class EditPage extends StatelessWidget {
+  String id = '';
   String title = '';
   String text = '';
+
+  EditPage(Memo memo) {
+    this.id = memo.id;
+    this.title = memo.title;
+    this.text = memo.text;
+  }
 
   @override
   Widget build(Object context) {
@@ -33,6 +40,7 @@ class EditPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
+              controller: TextEditingController(text: title),
               onChanged: (String title) {
                 this.title = title;
               },
@@ -49,6 +57,7 @@ class EditPage extends StatelessWidget {
               padding: EdgeInsets.all(10),
             ),
             TextField(
+              controller: TextEditingController(text: text),
               onChanged: (String text) {
                 this.text = text;
               },
@@ -69,17 +78,27 @@ class EditPage extends StatelessWidget {
   Future<void> saveDB() async {
     DBHelper sd = DBHelper();
 
+    String id = this.id;
+    if (id == null) {
+      id = stringToSha512(DateTime.now().toString());
+      var fido = Memo(
+        id: id,
+        title: this.title,
+        text: this.text,
+        createTime: DateTime.now().toString(),
+        editTime: DateTime.now().toString(),
+      );
+      await sd.insertMemo(fido);
+      return;
+    }
+
     var fido = Memo(
-      id: stringToSha512(DateTime.now().toString()),
+      id: this.id,
       title: this.title,
       text: this.text,
-      createTime: DateTime.now().toString(),
       editTime: DateTime.now().toString(),
     );
-
-    await sd.insertMemo(fido);
-
-    print(await sd.memos());
+    await sd.updateMemo(fido);
   }
 
   String stringToSha512(String text) {
