@@ -119,13 +119,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         TextButton(
                           child: const Text('삭제'),
                           onPressed: () {
-                            deleteMemo(memo.id);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ),
-                            );
+                            setState(() {
+                              deleteMemo(memo.id);
+                            });
                           },
                         ),
                         const SizedBox(width: 8),
