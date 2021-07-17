@@ -29,9 +29,12 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(left: 5, top: 40, bottom: 20),
-            child: Text(
-              '메모메모',
-              style: TextStyle(fontSize: 36, color: Colors.blue),
+            child: Container(
+              child: Text(
+                '메모메모',
+                style: TextStyle(fontSize: 36, color: Colors.blue),
+              ),
+              alignment: Alignment.centerLeft,
             ),
           ),
           Expanded(
@@ -66,48 +69,71 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         }
         return ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemCount: snap.data.length,
           itemBuilder: (context, index) {
             Memo memo = snap.data[index];
             print(memo.toString());
-            return Column(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.album),
-                  title: Text(memo.title),
-                  subtitle: Text(memo.text),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                      child: const Text('수정'),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditPage(memo),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      child: const Text('삭제'),
-                      onPressed: () {
-                        deleteMemo(memo.id);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyHomePage(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 8),
+            return InkWell(
+              onTap: () {
+                print("onTap!");
+              },
+              onLongPress: () {
+                print("onLongPress!");
+                setState(() {
+                  deleteMemo(memo.id);
+                });
+              },
+              child: Container(
+                margin: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(230, 230, 230, 1),
+                  border: Border.all(color: Colors.blue[200], width: 1),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(color: Colors.lightBlue, blurRadius: 3)
                   ],
                 ),
-              ],
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.album),
+                      title: Text(memo.title),
+                      subtitle: Text(memo.text),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        TextButton(
+                          child: const Text('수정'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditPage(memo),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          child: const Text('삭제'),
+                          onPressed: () {
+                            deleteMemo(memo.id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         );
