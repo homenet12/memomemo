@@ -5,21 +5,35 @@ import 'package:memomemo/database/memo.dart';
 
 class ViewPage extends StatelessWidget {
   ViewPage({Key key, this.id}) : super(key: key);
-
   final String id;
 
   @override
   Widget build(BuildContext context) {
-    Memo memo = selectMemo(id) as Memo;
-
     return Scaffold(
       appBar: AppBar(),
       body: Container(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(memo.title),
-            Text(memo.text),
-            Text(memo.createTime)
+            FutureBuilder(
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text(snapshot.data.title),
+                        Text(snapshot.data.text)
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(
+                    child: Text("데이터 없음"),
+                  );
+                }
+              },
+              future: selectMemo(id),
+            )
           ],
         ),
       ),

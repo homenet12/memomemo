@@ -7,13 +7,11 @@ import 'package:memomemo/screens/home.dart';
 
 class EditPage extends StatelessWidget {
   EditPage({Key key, this.id}) : super(key: key);
-  Memo memo;
+  Memo memo = new Memo();
   final String id;
 
   @override
   Widget build(Object context) {
-    this.memo = selectMemo(id) as Memo;
-
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[

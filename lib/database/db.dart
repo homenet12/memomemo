@@ -87,6 +87,10 @@ class DBHelper {
   Future<Memo> selectMemo(String id) async {
     final db = await database;
 
+    if (id == null) {
+      return new Memo();
+    }
+
     var res = await db.rawQuery('SELECT * FROM $tableName WHERE id = ?', [id]);
     return res.isNotEmpty
         ? Memo(
