@@ -6,18 +6,14 @@ import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/screens/home.dart';
 
 class EditPage extends StatelessWidget {
-  String id = '';
-  String title = '';
-  String text = '';
-
-  EditPage(Memo memo) {
-    this.id = memo.id;
-    this.title = memo.title;
-    this.text = memo.text;
-  }
+  EditPage({Key key, this.id}) : super(key: key);
+  Memo memo;
+  final String id;
 
   @override
   Widget build(Object context) {
+    this.memo = selectMemo(id) as Memo;
+
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -40,9 +36,9 @@ class EditPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              controller: TextEditingController(text: title),
+              controller: TextEditingController(text: memo.title),
               onChanged: (String title) {
-                this.title = title;
+                memo.title = title;
               },
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
               //obscureText: true,
@@ -57,9 +53,9 @@ class EditPage extends StatelessWidget {
               padding: EdgeInsets.all(10),
             ),
             TextField(
-              controller: TextEditingController(text: text),
+              controller: TextEditingController(text: memo.text),
               onChanged: (String text) {
-                this.text = text;
+                memo.text = text;
               },
               //obscureText: true,
               decoration: InputDecoration(
@@ -78,13 +74,13 @@ class EditPage extends StatelessWidget {
   Future<void> saveDB() async {
     DBHelper sd = DBHelper();
 
-    String id = this.id;
+    String id = memo.id;
     if (id == null) {
       id = stringToSha512(DateTime.now().toString());
       var fido = Memo(
         id: id,
-        title: this.title,
-        text: this.text,
+        title: memo.title,
+        text: memo.text,
         createTime: DateTime.now().toString(),
         editTime: DateTime.now().toString(),
       );
@@ -93,9 +89,9 @@ class EditPage extends StatelessWidget {
     }
 
     var fido = Memo(
-      id: this.id,
-      title: this.title,
-      text: this.text,
+      id: memo.id,
+      title: memo.title,
+      text: memo.text,
       editTime: DateTime.now().toString(),
     );
     await sd.updateMemo(fido);
@@ -105,5 +101,10 @@ class EditPage extends StatelessWidget {
     var bytes = utf8.encode(text); // data being hashed
     var digest = sha512.convert(bytes);
     return digest.toString();
+  }
+
+  Future<Memo> selectMemo(String id) async {
+    DBHelper db = new DBHelper();
+    return await db.selectMemo(id);
   }
 }

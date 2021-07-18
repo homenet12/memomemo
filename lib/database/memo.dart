@@ -1,7 +1,7 @@
 class Memo {
   final String id;
-  final String title;
-  final String text;
+  String title;
+  String text;
   final String createTime;
   final String editTime;
 

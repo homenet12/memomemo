@@ -83,4 +83,18 @@ class DBHelper {
       whereArgs: [id],
     );
   }
+
+  Future<Memo> selectMemo(String id) async {
+    final db = await database;
+
+    var res = await db.rawQuery('SELECT * FROM $tableName WHERE id = ?', [id]);
+    return res.isNotEmpty
+        ? Memo(
+            id: res.first['id'],
+            title: res.first['title'],
+            text: res.first['text'],
+            createTime: res.first['createTime'],
+            editTime: res.first['editTime'])
+        : new Memo();
+  }
 }

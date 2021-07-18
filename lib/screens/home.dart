@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/screens/edit.dart';
 import 'package:memomemo/database/db.dart';
+import 'package:memomemo/screens/view.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -38,14 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Expanded(
-            child: memoBuilder(),
+            child: memoBuilder(context),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EditPage(new Memo())));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => EditPage()));
         },
         tooltip: '메모를 추가하려면 클릭하세요',
         label: Text('메모 추가'),
@@ -59,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return await dbHelper.memos();
   }
 
-  Widget memoBuilder() {
+  Widget memoBuilder(BuildContext parentContext) {
     return FutureBuilder(
       builder: (BuildContext context, AsyncSnapshot<List<Memo>> snap) {
         if (snap.data == null) {
@@ -76,13 +77,21 @@ class _MyHomePageState extends State<MyHomePage> {
             print(memo.toString());
             return InkWell(
               onTap: () {
-                print("onTap!");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewPage(id: memo.id),
+                  ),
+                );
               },
-              onLongPress: () {
+              onLongPress: () async {
                 print("onLongPress!");
-                setState(() {
-                  deleteMemo(memo.id);
-                });
+                bool deleteFlag = await showAlertDialog(parentContext);
+                if (deleteFlag) {
+                  setState(() {
+                    deleteMemo(memo.id);
+                  });
+                }
               },
               child: Container(
                 margin: EdgeInsets.all(5),
@@ -108,9 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: const Text('수정'),
                           onPressed: () {
                             Navigator.push(
-                              context,
+                              parentContext,
                               MaterialPageRoute(
-                                builder: (context) => EditPage(memo),
+                                builder: (parentContext) =>
+                                    EditPage(id: memo.id),
                               ),
                             );
                           },
@@ -118,10 +128,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         const SizedBox(width: 8),
                         TextButton(
                           child: const Text('삭제'),
-                          onPressed: () {
-                            setState(() {
-                              deleteMemo(memo.id);
-                            });
+                          onPressed: () async {
+                            bool deleteFlag =
+                                await showAlertDialog(parentContext);
+                            if (deleteFlag) {
+                              setState(() {
+                                deleteMemo(memo.id);
+                              });
+                            }
                           },
                         ),
                         const SizedBox(width: 8),
@@ -141,5 +155,33 @@ class _MyHomePageState extends State<MyHomePage> {
   deleteMemo(String id) {
     DBHelper dbHelper = DBHelper();
     dbHelper.deleteMemo(id);
+  }
+
+  Future<bool> showAlertDialog(BuildContext context) async {
+    bool result = await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('삭제 경고'),
+          content: Text("정말 삭제하시겠습니까?"),
+          actions: <Widget>[
+            TextButton(
+              child: Text('삭제'),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return result;
   }
 }
