@@ -5,11 +5,16 @@ import 'package:memomemo/database/db.dart';
 import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/screens/home.dart';
 
-class EditPage extends StatelessWidget {
+class WritePage extends StatefulWidget {
+  @override
+  State<WritePage> createState() => _WritePageState();
+}
+
+class _WritePageState extends State<WritePage> {
   Memo memo = new Memo();
 
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -21,8 +26,8 @@ class EditPage extends StatelessWidget {
             icon: const Icon(Icons.save),
             onPressed: () {
               saveDB();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()));
+              /*Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyHomePage()));*/
             },
           ),
         ],
@@ -32,7 +37,6 @@ class EditPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              controller: TextEditingController(text: memo.title),
               onChanged: (String title) {
                 memo.title = title;
               },
@@ -49,7 +53,6 @@ class EditPage extends StatelessWidget {
               padding: EdgeInsets.all(10),
             ),
             TextField(
-              controller: TextEditingController(text: memo.text),
               onChanged: (String text) {
                 memo.text = text;
               },
@@ -69,38 +72,21 @@ class EditPage extends StatelessWidget {
 
   Future<void> saveDB() async {
     DBHelper sd = DBHelper();
-
-    String id = memo.id;
-    if (id == null) {
-      id = stringToSha512(DateTime.now().toString());
-      var fido = Memo(
-        id: id,
-        title: memo.title,
-        text: memo.text,
-        createTime: DateTime.now().toString(),
-        editTime: DateTime.now().toString(),
-      );
-      await sd.insertMemo(fido);
-      return;
-    }
-
+    String id = stringToSha512(DateTime.now().toString());
     var fido = Memo(
-      id: memo.id,
+      id: id,
       title: memo.title,
       text: memo.text,
+      createTime: DateTime.now().toString(),
       editTime: DateTime.now().toString(),
     );
-    await sd.updateMemo(fido);
+    await sd.insertMemo(fido);
+    return;
   }
 
   String stringToSha512(String text) {
     var bytes = utf8.encode(text); // data being hashed
     var digest = sha512.convert(bytes);
     return digest.toString();
-  }
-
-  Future<Memo> selectMemo(String id) async {
-    DBHelper db = new DBHelper();
-    return await db.selectMemo(id);
   }
 }

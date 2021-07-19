@@ -3,6 +3,7 @@ import 'package:memomemo/database/memo.dart';
 import 'package:memomemo/screens/edit.dart';
 import 'package:memomemo/database/db.dart';
 import 'package:memomemo/screens/view.dart';
+import 'package:memomemo/screens/write.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => EditPage()));
+              context, MaterialPageRoute(builder: (context) => WritePage()));
         },
         tooltip: '메모를 추가하려면 클릭하세요',
         label: Text('메모 추가'),
@@ -119,8 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.push(
                               parentContext,
                               MaterialPageRoute(
-                                builder: (parentContext) =>
-                                    EditPage(id: memo.id),
+                                builder: (parentContext) => EditPage(),
                               ),
                             );
                           },

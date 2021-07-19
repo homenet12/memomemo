@@ -21,8 +21,15 @@ class ViewPage extends StatelessWidget {
                   return Container(
                     child: Column(
                       children: <Widget>[
-                        Text(snapshot.data.title),
-                        Text(snapshot.data.text)
+                        Container(
+                          child: Text(snapshot.data.title),
+                        ),
+                        Container(
+                          height: 500, //길이를 줘야함.
+                          child: SingleChildScrollView(
+                              child: Text(snapshot.data.text,
+                                  style: TextStyle(fontSize: 100))),
+                        ),
                       ],
                     ),
                   );
