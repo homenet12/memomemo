@@ -80,6 +80,7 @@ class _WritePageState extends State<WritePage> {
       createTime: DateTime.now().toString(),
       editTime: DateTime.now().toString(),
     );
+    print(fido.toString());
     await sd.insertMemo(fido);
     return;
   }

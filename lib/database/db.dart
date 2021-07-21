@@ -86,7 +86,7 @@ class DBHelper {
 
   Future<Memo> selectMemo(String id) async {
     final db = await database;
-
+    print("id : " + id);
     if (id == null) {
       return new Memo();
     }

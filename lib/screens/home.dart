@@ -75,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
           itemCount: snap.data.length,
           itemBuilder: (context, index) {
             Memo memo = snap.data[index];
-            print(memo.toString());
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -86,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               onLongPress: () async {
-                print("onLongPress!");
                 bool deleteFlag = await showAlertDialog(parentContext);
                 if (deleteFlag) {
                   setState(() {
@@ -108,8 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.album),
-                      title: Text(memo.title),
-                      subtitle: Text(memo.text),
+                      title: Text(memo.title ?? 'null'),
+                      subtitle: Text(memo.text ?? 'null'),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -120,7 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.push(
                               parentContext,
                               MaterialPageRoute(
-                                builder: (parentContext) => EditPage(),
+                                builder: (parentContext) =>
+                                    EditPage(id: memo.id),
                               ),
                             );
                           },
